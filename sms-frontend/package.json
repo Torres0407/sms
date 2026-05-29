@@ -1,0 +1,24 @@
+{
+  "name": "sms-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@10.2.4",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "portals/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test"
+  },
+  "devDependencies": {
+    "turbo": "^2.9.16",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "eslint": "^8.57.1"
+  }
+}
