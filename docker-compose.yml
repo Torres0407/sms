@@ -1,0 +1,38 @@
+services:
+  nginx:
+    image: nginx:alpine
+    ports: ["80:80", "443:443"]
+    volumes: ["./nginx.conf:/etc/nginx/nginx.conf", "./certs:/etc/ssl/certs"]
+    depends_on: [api, web]
+
+  api:
+    build: ./sms-backend
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_URL=jdbc:postgresql://postgres:5432/smsdb
+      - REDIS_URL=redis://redis:6379
+      - AWS_S3_BUCKET=${S3_BUCKET}
+    depends_on: [postgres, redis]
+
+  web:
+    build:
+      context: ./sms-frontend
+      dockerfile: apps/web/Dockerfile
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api.sms.com
+
+  postgres:
+    image: postgres:16
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+    environment:
+      POSTGRES_DB: smsdb
+      POSTGRES_USER: smsuser
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+  redis:
+    image: redis:7-alpine
+    volumes: ["redis_data:/data"]
+
+volumes:
+  postgres_data:
+  redis_data:
